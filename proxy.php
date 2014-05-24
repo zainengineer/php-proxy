@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__FILE__) . '/globals.php';
 
 /**
  * @name        PHP Proxy
@@ -78,7 +79,7 @@ class Proxy {
         {
             $url = "http://" . $this->config["server"] . ":" . $this->config["http_port"] . "/" . ltrim($url, "/");
         }
-        
+//        echo "<br/> $url  File:" . __FILE__ . " line:" . __LINE__ . "<br/>\r\n";
         // set url
         curl_setopt($this->ch, CURLOPT_URL, $url);
         
@@ -244,7 +245,7 @@ class Proxy {
         } 
         else if( is_array( $post ) )
         {
-            $post = http_build_query($post);
+            $post = http_build_query($post,'','&');
         }
         
         curl_setopt($this->ch, CURLOPT_POST, 1);
