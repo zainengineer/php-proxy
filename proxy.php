@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__FILE__) . '/globals.php';
+require_once dirname(__FILE__) . '/StringHelper.php';
 
 /**
  * @name        PHP Proxy
@@ -79,7 +80,7 @@ class Proxy {
         {
             $url = "http://" . $this->config["server"] . ":" . $this->config["http_port"] . "/" . ltrim($url, "/");
         }
-//        echo "<br/> $url  File:" . __FILE__ . " line:" . __LINE__ . "<br/>\r\n";
+
         // set url
         curl_setopt($this->ch, CURLOPT_URL, $url);
         
@@ -110,6 +111,14 @@ class Proxy {
         // execute
         $data = curl_exec($this->ch);
         $info = curl_getinfo($this->ch);
+        $headers = StringHelper::getBetweenString($data,'','Content-Type',false,false);
+        if ($headers){
+            $Location = trim(StringHelper::getBetweenString($headers,'Location: ',"\n",true,true));
+            if ($Location){
+                header("Location: " . $Location);
+                die;
+            }
+        }
         
         // extract response from headers
         $body = $info["size_download"] ? substr($data, $info["header_size"], $info["size_download"]) : "";
